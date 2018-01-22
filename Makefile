@@ -1,8 +1,11 @@
 #compiler and linker
-CC = /home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-VERSION= Raspberry
+CC = gcc
+#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
+VERSION= Debugx64
+#Raspberry
+CROSSCOMPILE_HOSTNAME = pi
 CROSSCOMPILE_SSH_HOST = 192.168.1.70
-CROSSCOMPILE_DIR = /home/pi
+CROSSCOMPILE_DIR = 	/home/pi
 
 #The target binary program
 TARGET = project
@@ -53,9 +56,9 @@ $(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 
 run:	resources 
 	./$(TARGETDIR)/$(VERSION)/$(TARGET)
-
+	
 sync: 
-	rsync -r --delete ./$(TARGETDIR)/$(VERSION) pi@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
+	rsync -r --delete ./$(TARGETDIR)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
 
 #Clean PART
 clean:
