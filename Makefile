@@ -1,59 +1,60 @@
-#compiler and linker
-CC = gcc
-#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-VERSION= Debugx64
-#Raspberry
-CROSSCOMPILE_HOSTNAME = pi
-CROSSCOMPILE_SSH_HOST = 192.168.1.70
-CROSSCOMPILE_DIR = 	/home/pi
-
+#Compiler and linker
+#Version
 #The target binary program
-TARGET = project
+#Flags -g -Wall
+#Remote crosscompiling sync
+#Write Macros -D
+
+CC 	:= gcc
+VERSION	:= Debugx64
+TARGET 	:= project
+CFLAGS	:= -g -Wall
+MACROS	:= -D DEBUG
+
+CROSSCOMPILE_HOSTNAME 	:= pi
+CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
+CROSSCOMPILE_DIR 	:= /home/pi
+#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
+#Raspberry
+
+#------------------------------------------------------------------------------------------------------------
 
 #The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-INCDIR      := src/Fold
-BUILDDIR    := Objects
-TARGETDIR   := Release
-RESDIR      := Resources
-SRCEXT      := c
-DEPEXT      := 
-OBJEXT      := o
-
-#Flags, Libraries and Includes
-CFLAGS      := -g -Wall
-LIB         := -lm 
-INC         := -I/usr/local/include
-INCDEP      := -I$(INCDIR)
+SRC_MODULES_DIR	:= Src_Modules
+BUILDDIR    	:= Objects
+TARGETDIR   	:= Release
+RESDIR      	:= Resources
 	
-#---------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE
-#---------------------------------------------------------------------------------
-SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+#Modules Names
+MODULEA := Application
+MODULEB := ModuleB
 
-#---------------------------------------------------------------------------------
+export
+
 #DEFAULT PART
-all: resources $(TARGET)
+all: resources Application
 
 #DIRECTORIES PART
 directories: 
-	@mkdir -p $(TARGETDIR)/$(VERSION)
-	@mkdir -p $(BUILDDIR)/$(VERSION)
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(RESDIR)
-	@mkdir -p $(SRCDIR)
+	@mkdir -p $(SRC_MODULES_DIR)
+	
+#ModuleA
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEA)/src
+	
+#ModuleB
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEB)/src
 	
 resources: directories
 	rsync -r --delete $(RESDIR) $(TARGETDIR)/$(VERSION)
-
-#COMPILE & RUN PART
-$(TARGET):  $(OBJECTS) 
-	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIB)
-
-$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
-	$(CC) $(CFLAGS) -c $< $(INCDEP) -o $@  
-
+	
+#CompilePart
+Application: 
+	make -C ./$(SRC_MODULES_DIR)/$(MODULEA)
+	
+	
 run:	resources 
 	./$(TARGETDIR)/$(VERSION)/$(TARGET)
 	
@@ -67,5 +68,5 @@ clean:
 cleaner: clean
 	@$(RM) -rf $(TARGETDIR)
 
-.PHONY: all clean cleaner resources
+.PHONY: all directories resources clean cleaner
 
