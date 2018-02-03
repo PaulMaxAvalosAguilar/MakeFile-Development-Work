@@ -29,7 +29,7 @@ directories:
 	@mkdir -p $(BUILDDIR)/$(VERSION)
 	
 
-#COMPILE & RUN PART
+#COMPILE PART
 $(TARGET):  $(OBJECTS) 
 	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIB)
 

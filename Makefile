@@ -7,9 +7,10 @@
 
 CC 	:= gcc
 VERSION	:= Debugx64
-TARGET 	:= project
+TARGET 	:= Application
 CFLAGS	:= -g -Wall
-MACROS	:= -D DEBUG
+MACROS	:= -D DEBUG\
+	-D release
 
 CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
@@ -27,7 +28,6 @@ RESDIR      	:= Resources
 	
 #Modules Names
 MODULEA := Application
-MODULEB := ModuleB
 
 export
 
@@ -44,16 +44,12 @@ directories:
 #ModuleA
 	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEA)/src
 	
-#ModuleB
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEB)/src
-	
 resources: directories
 	rsync -r --delete $(RESDIR) $(TARGETDIR)/$(VERSION)
 	
 #CompilePart
 Application: 
 	make -C ./$(SRC_MODULES_DIR)/$(MODULEA)
-	
 	
 run:	resources 
 	./$(TARGETDIR)/$(VERSION)/$(TARGET)
