@@ -3,6 +3,7 @@
 #include "a.h"
 #include "Headers/header.h"
 #include "Funcs.h"
+#include "Static.h"
 
 int main(){
 	
@@ -13,6 +14,9 @@ int main(){
 	hello();
 	printf("%s", "hello to everyone u fools\n");
 	goodbye();
-	
+
+	static_function();
+
+
 	return 0;
 }

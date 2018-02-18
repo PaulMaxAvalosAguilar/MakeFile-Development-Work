@@ -1,19 +1,18 @@
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
-BUILDDIR    := ../../$(BUILDDIRECTORY)
-TARGETDIR   := ../../$(TARGETDIRECTORY)
+BUILDDIR    := ../../Objects
+TARGETDIR   := ../../Release
 SRCEXT      := c
 OBJEXT      := o
 
 
 #write -l library
-LIB         := -L ../../$(LIBDIRECTORY)/$(VERSION)/ -l$(MODULEB)
+LIB         := 
 #write -I $(INCDIR)
 INCDEP      := -I src/Fold\
-	-I src/Functions\
-	-I ../StaticLibTest/src/
-
+	-I src/Functions
+	
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
@@ -28,7 +27,7 @@ all: directories $(TARGET)
 directories:
 	@mkdir -p $(TARGETDIR)/$(VERSION)
 	@mkdir -p $(BUILDDIR)/$(VERSION)
-
+	
 
 #COMPILE PART
 $(TARGET):  $(OBJECTS) 
@@ -38,5 +37,13 @@ $(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
 	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
 
-.PHONY: all directores 
+
+#Clean PART
+clean:
+	@$(RM) -rf $(BUILDDIR)
+
+cleaner: clean
+	@$(RM) -rf $(TARGETDIR)
+
+.PHONY: all directores clean cleaner
 

@@ -2,17 +2,12 @@
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
 BUILDDIR    := ../../$(BUILDDIRECTORY)
-TARGETDIR   := ../../$(TARGETDIRECTORY)
+LIBDIR	    := ../../$(LIBDIRECTORY)
 SRCEXT      := c
 OBJEXT      := o
 
-
-#write -l library
-LIB         := -L ../../$(LIBDIRECTORY)/$(VERSION)/ -l$(MODULEB)
 #write -I $(INCDIR)
-INCDEP      := -I src/Fold\
-	-I src/Functions\
-	-I ../StaticLibTest/src/
+INCDEP      := 
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
@@ -22,21 +17,20 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCE
 
 #---------------------------------------------------------------------------------
 #DEFAULT PART
-all: directories $(TARGET)
+all: directories library
 
 #DIRECTORIES PART
 directories:
-	@mkdir -p $(TARGETDIR)/$(VERSION)
+	@mkdir -p $(LIBDIR)/$(VERSION)
 	@mkdir -p $(BUILDDIR)/$(VERSION)
 
 
 #COMPILE PART
-$(TARGET):  $(OBJECTS) 
-	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIB)
+library:  $(OBJECTS) 
+	$(ARCH) rcs $(LIBDIR)/$(VERSION)/lib$(MODULEB).a $?
 
 $(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
 	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
 
-.PHONY: all directores 
-
+.PHONY: all directores LIBRARY
