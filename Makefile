@@ -1,4 +1,5 @@
 #Compiler and linker
+#Archiver
 #Version
 #The target binary program
 #Flags -g -Wall
@@ -6,6 +7,7 @@
 #Write Macros -D
 
 CC 	:= gcc
+ARCH	:= ar
 VERSION	:= Debugx64
 TARGET 	:= Application
 CFLAGS	:= -g -Wall
@@ -22,12 +24,16 @@ CROSSCOMPILE_DIR 	:= /home/pi
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRC_MODULES_DIR	:= Src_Modules
-BUILDDIR    	:= Objects
-TARGETDIR   	:= Release
+BUILDDIRECTORY 	:= Objects
+TARGETDIRECTORY	:= Release
 RESDIR      	:= Resources
-	
+LIBDIRECTORY	:= Libraries
+
 #Modules Names
 MODULEA := Application
+MODULEB := StaticLibTest
+MODULEC := Namesapces_Struct_CompositionTest
+MODULED := DataStructures
 
 export
 
@@ -36,33 +42,39 @@ all: resources Application
 
 #DIRECTORIES PART
 directories: 
-	@mkdir -p $(TARGETDIR)
-	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(TARGETDIRECTORY)
+	@mkdir -p $(BUILDDIRECTORY)
 	@mkdir -p $(RESDIR)
+	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
-	
-#ModuleA
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEA)/src
-	
+
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEA)/
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEB)/
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEC)/
+	@mkdir -p $(SRC_MODULES_DIR)/$(MODULED)/
+
 resources: directories
-	rsync -r --delete $(RESDIR) $(TARGETDIR)/$(VERSION)
-	
-#CompilePart
-Application: 
+	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
+
+Application:
+#Execute first Dependencies(Aka Libraries) Modules
+	make -C ./$(SRC_MODULES_DIR)/$(MODULEB)
+#Execute at last Main Module
 	make -C ./$(SRC_MODULES_DIR)/$(MODULEA)
-	
+
 run:	resources 
-	./$(TARGETDIR)/$(VERSION)/$(TARGET)
-	
+	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)
+
 sync: 
-	rsync -r --delete ./$(TARGETDIR)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
+	@rsync -r --delete ./$(TARGETDIRECTORY)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
 
 #Clean PART
 clean:
-	@$(RM) -rf $(BUILDDIR)
+	@$(RM) -rf $(BUILDDIRECTORY)
 
 cleaner: clean
-	@$(RM) -rf $(TARGETDIR)
+	@$(RM) -rf $(TARGETDIRECTORY)
+	@$(RM) -rf $(LIBDIRECTORY)
 
 .PHONY: all directories resources clean cleaner
 
