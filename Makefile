@@ -37,7 +37,7 @@ MODULED := DataStructures
 MODULES	:= $(MODULEB) $(MODULEA)
 
 #---------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE (JUST APPLICATION CALL ORDER)
+#DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
 export
 
