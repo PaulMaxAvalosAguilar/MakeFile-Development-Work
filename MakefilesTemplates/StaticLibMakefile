@@ -38,3 +38,43 @@ $(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
 
 .PHONY: all directores LIBRARY
+#Library name
+LIBNAME     := $(MODULEB)
+
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR      := src
+SRCEXT      := c
+OBJEXT      := o
+
+#write -I $(INCDIR)
+INCDEP      := 
+
+#---------------------------------------------------------------------------------
+#DO NOT EDIT BELOW THIS LINE
+#---------------------------------------------------------------------------------
+BUILDDIR    := ../../$(BUILDDIRECTORY)
+LIBDIR	    := ../../$(LIBDIRECTORY)
+
+SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+
+#---------------------------------------------------------------------------------
+
+#DEFAULT PART
+all: directories $(LIBNAME)
+
+#DIRECTORIES PART
+directories:
+	@mkdir -p $(LIBDIR)/$(VERSION)
+	@mkdir -p $(BUILDDIR)/$(VERSION)
+
+
+#COMPILE PART
+$(LIBNAME):  $(OBJECTS) 
+	$(ARCH) rcs $(LIBDIR)/$(VERSION)/lib$@.a $?
+
+$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
+	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+
+.PHONY: all directores LIBRARY

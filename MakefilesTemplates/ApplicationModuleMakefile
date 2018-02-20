@@ -1,3 +1,45 @@
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR      := src
+SRCEXT      := c
+OBJEXT      := o
+
+#write -l library
+LIB         :=  -l$(MODULEB)
+#write -I $(INCDIR)
+INCDEP      := -I src/Fold\
+	-I src/Functions\
+	-I ../StaticLibTest/src/
+
+#---------------------------------------------------------------------------------
+#DO NOT EDIT BELOW THIS LINE
+#---------------------------------------------------------------------------------
+BUILDDIR    := ../../$(BUILDDIRECTORY)
+TARGETDIR   := ../../$(TARGETDIRECTORY)
+LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)/
+
+SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+
+#---------------------------------------------------------------------------------
+
+#DEFAULT PART
+all: directories $(TARGET)
+
+#DIRECTORIES PART
+directories:
+	@mkdir -p $(TARGETDIR)/$(VERSION)
+	@mkdir -p $(BUILDDIR)/$(VERSION)
+
+
+#COMPILE PART
+$(TARGET):  $(OBJECTS) 
+	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIBRARYPATH) $(LIB)
+
+$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
+	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+
+.PHONY: all directores 
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
