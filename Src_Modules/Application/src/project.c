@@ -17,6 +17,5 @@ int main(){
 
 	static_function();
 
-
 	return 0;
 }

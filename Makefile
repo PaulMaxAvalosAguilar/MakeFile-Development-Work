@@ -33,13 +33,16 @@ MODULEB := StaticLibTest
 MODULEC := Namesapces_Struct_CompositionTest
 MODULED := DataStructures
 
+#Write main module at last for correct linking
+MODULES	:= $(MODULEB) $(MODULEA)
+
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE (JUST APPLICATION CALL ORDER)
 #---------------------------------------------------------------------------------
 export
 
 #DEFAULT PART
-all: resources Application
+all: Application
 
 #DIRECTORIES PART
 directories: 
@@ -49,22 +52,20 @@ directories:
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
 
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEA)/
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEB)/
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULEC)/
-	@mkdir -p $(SRC_MODULES_DIR)/$(MODULED)/
+	for module in $(MODULES); do\
+		mkdir -p $(SRC_MODULES_DIR)/$$module;\
+	done
 
-resources: directories
+resources:
 	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
 
 Application:
-#CHANGE CALLING ORDER PROPERLY
-#Execute first Dependencies(Aka Libraries) Modules
-	make -C ./$(SRC_MODULES_DIR)/$(MODULEB)
-#Execute at last Main Module
-	make -C ./$(SRC_MODULES_DIR)/$(MODULEA)
 
-run:	resources 
+	for module in $(MODULES); do\
+		make -C ./$(SRC_MODULES_DIR)/$$module;\
+	done
+
+run:	
 	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)
 
 sync: 
@@ -78,5 +79,5 @@ cleaner: clean
 	@$(RM) -rf $(TARGETDIRECTORY)
 	@$(RM) -rf $(LIBDIRECTORY)
 
-.PHONY: all directories resources clean cleaner
+.PHONY: all directories resources clean cleaner Application
 
