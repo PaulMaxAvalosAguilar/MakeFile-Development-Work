@@ -23,7 +23,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #COMPILE PART
 $(LIBDIR)/lib$(LIBNAME).a:  $(OBJECTS) 
 	@mkdir -p $(dir $@)
-	$(ARCH) rcs $@ $?
+	$(ARCH) $@ $?
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) 
