@@ -61,7 +61,7 @@ resources:
 
 Application:
 
-	for module in $(MODULES); do\
+	@for module in $(MODULES); do\
 		make -C ./$(SRC_MODULES_DIR)/$$module;\
 	done
 
