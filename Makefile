@@ -52,7 +52,7 @@ directories:
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
 
-	for module in $(MODULES); do\
+	@for module in $(MODULES); do\
 		mkdir -p $(SRC_MODULES_DIR)/$$module;\
 	done
 
