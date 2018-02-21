@@ -79,5 +79,5 @@ cleaner: clean
 	@$(RM) -rf $(TARGETDIRECTORY)
 	@$(RM) -rf $(LIBDIRECTORY)
 
-.PHONY: all directories resources clean cleaner Application
+.PHONY: all directories resources clean cleaner Application run sync
 

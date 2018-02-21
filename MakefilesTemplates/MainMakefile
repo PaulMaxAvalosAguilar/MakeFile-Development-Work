@@ -1,82 +1,33 @@
-#Compiler and linker
-#Archiver
-#Version
-#The target binary program
-#Flags -g -Wall
-#Remote crosscompiling sync
-#Write Macros -D
-
-CC 	:= gcc
-ARCH	:= ar
-VERSION	:= Debugx64
-TARGET 	:= Application
-CFLAGS	:= -g -Wall
-MACROS	:= -D DEBUG\
-#-D release
-
-CROSSCOMPILE_HOSTNAME 	:= pi
-CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
-CROSSCOMPILE_DIR 	:= /home/pi
-#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-#Raspberry
-
 #The Directories, Source, Includes, Objects, Binary and Resources
-SRC_MODULES_DIR	:= Src_Modules
-BUILDDIRECTORY 	:= Objects
-TARGETDIRECTORY	:= Release
-RESDIR      	:= Resources
-LIBDIRECTORY	:= Libraries
+SRCDIR      := src
+SRCEXT      := c
+OBJEXT      := o
 
-#Modules Names
-MODULEA := Application
-MODULEB := StaticLibTest
-MODULEC := Namesapces_Struct_CompositionTest
-MODULED := DataStructures
-
-#Write main module at last for correct linking
-MODULES	:= $(MODULEB) $(MODULEA)
+#write -l library
+LIB         :=  -l$(MODULEB)
+#write -I $(INCDIR)
+INCDEP      := -I src/Fold\
+	-I src/Functions\
+	-I ../StaticLibTest/src/
 
 #---------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE 
+#DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-export
+BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
+TARGETDIR   := ../../$(TARGETDIRECTORY)/$(VERSION)
+LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)
 
-#DEFAULT PART
-all: Application
+SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
 
-#DIRECTORIES PART
-directories: 
-	@mkdir -p $(TARGETDIRECTORY)
-	@mkdir -p $(BUILDDIRECTORY)
-	@mkdir -p $(RESDIR)
-	@mkdir -p $(LIBDIRECTORY)
-	@mkdir -p $(SRC_MODULES_DIR)
+#---------------------------------------------------------------------------------
 
-	for module in $(MODULES); do\
-		mkdir -p $(SRC_MODULES_DIR)/$$module;\
-	done
+#COMPILE PART
+$(TARGETDIR)/$(TARGET):  $(OBJECTS)
+	@mkdir -p $(dir $@)
+	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB)
 
-resources:
-	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
 
-Application:
-
-	for module in $(MODULES); do\
-		make -C ./$(SRC_MODULES_DIR)/$$module;\
-	done
-
-run:	
-	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)
-
-sync: 
-	@rsync -r --delete ./$(TARGETDIRECTORY)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
-
-#Clean PART
-clean:
-	@$(RM) -rf $(BUILDDIRECTORY)
-
-cleaner: clean
-	@$(RM) -rf $(TARGETDIRECTORY)
-	@$(RM) -rf $(LIBDIRECTORY)
-
-.PHONY: all directories resources clean cleaner Application

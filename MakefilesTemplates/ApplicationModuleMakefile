@@ -1,86 +1,83 @@
-#The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-SRCEXT      := c
-OBJEXT      := o
+#Compiler and linker
+#Archiver
+#Version
+#The target binary program
+#Flags -g -Wall
+#Remote crosscompiling sync
+#Write Macros -D
 
-#write -l library
-LIB         :=  -l$(MODULEB)
-#write -I $(INCDIR)
-INCDEP      := -I src/Fold\
-	-I src/Functions\
-	-I ../StaticLibTest/src/
+CC 	:= gcc
+ARCH	:= ar
+VERSION	:= Debugx64
+TARGET 	:= Application
+CFLAGS	:= -g -Wall
+MACROS	:= -D DEBUG\
+#-D release
+
+CROSSCOMPILE_HOSTNAME 	:= pi
+CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
+CROSSCOMPILE_DIR 	:= /home/pi
+#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
+#Raspberry
+
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRC_MODULES_DIR	:= Src_Modules
+BUILDDIRECTORY 	:= Objects
+TARGETDIRECTORY	:= Release
+RESDIR      	:= Resources
+LIBDIRECTORY	:= Libraries
+
+#Modules Names
+MODULEA := Application
+MODULEB := StaticLibTest
+MODULEC := Namesapces_Struct_CompositionTest
+MODULED := DataStructures
+
+#Write main module at last for correct linking
+MODULES	:= $(MODULEB) $(MODULEA)
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-BUILDDIR    := ../../$(BUILDDIRECTORY)
-TARGETDIR   := ../../$(TARGETDIRECTORY)
-LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)/
-
-SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
-
-#---------------------------------------------------------------------------------
+export
 
 #DEFAULT PART
-all: directories $(TARGET)
+all: Application
 
 #DIRECTORIES PART
-directories:
-	@mkdir -p $(TARGETDIR)/$(VERSION)
-	@mkdir -p $(BUILDDIR)/$(VERSION)
+directories: 
+	@mkdir -p $(TARGETDIRECTORY)
+	@mkdir -p $(BUILDDIRECTORY)
+	@mkdir -p $(RESDIR)
+	@mkdir -p $(LIBDIRECTORY)
+	@mkdir -p $(SRC_MODULES_DIR)
 
+	for module in $(MODULES); do\
+		mkdir -p $(SRC_MODULES_DIR)/$$module;\
+	done
 
-#COMPILE PART
-$(TARGET):  $(OBJECTS) 
-	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIBRARYPATH) $(LIB)
+resources:
+	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
 
-$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
-	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+Application:
 
-.PHONY: all directores 
+	for module in $(MODULES); do\
+		make -C ./$(SRC_MODULES_DIR)/$$module;\
+	done
 
-#The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-SRCEXT      := c
-OBJEXT      := o
+run:	
+	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)
 
-#write -l library
-LIB         :=  -l$(MODULEB)
-#write -I $(INCDIR)
-INCDEP      := -I src/Fold\
-	-I src/Functions\
-	-I ../StaticLibTest/src/
+sync: 
+	@rsync -r --delete ./$(TARGETDIRECTORY)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
 
-#---------------------------------------------------------------------------------
-#DO NOT EDIT BELOW THIS LINE
-#---------------------------------------------------------------------------------
-BUILDDIR    := ../../$(BUILDDIRECTORY)
-TARGETDIR   := ../../$(TARGETDIRECTORY)
-LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)/
+#Clean PART
+clean:
+	@$(RM) -rf $(BUILDDIRECTORY)
 
-SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+cleaner: clean
+	@$(RM) -rf $(TARGETDIRECTORY)
+	@$(RM) -rf $(LIBDIRECTORY)
 
-#---------------------------------------------------------------------------------
-
-#DEFAULT PART
-all: directories $(TARGET)
-
-#DIRECTORIES PART
-directories:
-	@mkdir -p $(TARGETDIR)/$(VERSION)
-	@mkdir -p $(BUILDDIR)/$(VERSION)
-
-
-#COMPILE PART
-$(TARGET):  $(OBJECTS) 
-	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIBRARYPATH) $(LIB)
-
-$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
-	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
-
-.PHONY: all directores 
+.PHONY: all directories resources clean cleaner Application run sync
 

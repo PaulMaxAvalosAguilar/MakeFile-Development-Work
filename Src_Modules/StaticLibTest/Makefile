@@ -12,29 +12,20 @@ INCDEP      :=
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-BUILDDIR    := ../../$(BUILDDIRECTORY)
-LIBDIR	    := ../../$(LIBDIRECTORY)
+BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
+LIBDIR	    := ../../$(LIBDIRECTORY)/$(VERSION)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
 
 #---------------------------------------------------------------------------------
 
-#DEFAULT PART
-all: directories $(LIBNAME)
-
-#DIRECTORIES PART
-directories:
-	@mkdir -p $(LIBDIR)/$(VERSION)
-	@mkdir -p $(BUILDDIR)/$(VERSION)
-
-
 #COMPILE PART
-$(LIBNAME):  $(OBJECTS) 
-	$(ARCH) rcs $(LIBDIR)/$(VERSION)/lib$@.a $?
+$(LIBDIR)/lib$(LIBNAME).a:  $(OBJECTS) 
+	@mkdir -p $(dir $@)
+	$(ARCH) rcs $@ $?
 
-$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@) 
 	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
 
-.PHONY: all directores LIBRARY

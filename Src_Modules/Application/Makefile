@@ -13,31 +13,21 @@ INCDEP      := -I src/Fold\
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-BUILDDIR    := ../../$(BUILDDIRECTORY)
-TARGETDIR   := ../../$(TARGETDIRECTORY)
-LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)/
+BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
+TARGETDIR   := ../../$(TARGETDIRECTORY)/$(VERSION)
+LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/$(VERSION)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
 
 #---------------------------------------------------------------------------------
 
-#DEFAULT PART
-all: directories $(TARGET)
-
-#DIRECTORIES PART
-directories:
-	@mkdir -p $(TARGETDIR)/$(VERSION)
-	@mkdir -p $(BUILDDIR)/$(VERSION)
-
-
 #COMPILE PART
-$(TARGET):  $(OBJECTS) 
-	$(CC) -o $(TARGETDIR)/$(VERSION)/$(TARGET) $? $(LIBRARYPATH) $(LIB)
+$(TARGETDIR)/$(TARGET):  $(OBJECTS)
+	@mkdir -p $(dir $@)
+	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB)
 
-$(BUILDDIR)/$(VERSION)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
-	@mkdir -p $(dir $@) #this works for whenever we have a folder it creates it
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
-
-.PHONY: all directores 
 
