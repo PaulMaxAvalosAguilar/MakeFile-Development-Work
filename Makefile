@@ -7,7 +7,7 @@
 #Write Macros -D
 
 CC 	:= gcc
-ARCH	:= ar
+ARCH	:= ar rcs
 VERSION	:= Debugx64
 TARGET 	:= Application
 CFLAGS	:= -g -Wall
