@@ -1,5 +1,5 @@
 #Library name
-LIBNAME     := $(MODULEB)
+LIBNAME     := $(MODULEC)
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
@@ -21,15 +21,11 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #---------------------------------------------------------------------------------
 
 #COMPILE PART
-$(LIBDIR)/lib$(LIBNAME).a:  $(OBJECTS) 
+$(LIBDIR)/lib$(LIBNAME).so:  $(OBJECTS) 
 	@mkdir -p $(dir $@)
-<<<<<<< HEAD
-	$(ARCH) $@ $?
-=======
-	$(ARCH)  $@ $?
->>>>>>> 1d14be6cfb68af170b6c219cace1070528f02693
+	$(CC) -shared -o  $@ $?
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) 
-	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+	$(CC) $(CFLAGS) $(MACROS) -fPIC -c $< $(INCDEP) -o $@  
 

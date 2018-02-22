@@ -14,6 +14,9 @@ CFLAGS	:= -g -Wall
 MACROS	:= -D DEBUG\
 #-D release
 
+DLEXT	:= .so
+SLEXT	:= .a
+
 CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
 CROSSCOMPILE_DIR 	:= /home/pi
@@ -30,11 +33,11 @@ LIBDIRECTORY	:= Libraries
 #Modules Names
 MODULEA := Application
 MODULEB := StaticLibTest
-MODULEC := Namesapces_Struct_CompositionTest
+MODULEC	:= SharedLibTest
 MODULED := DataStructures
 
 #Write main module at last for correct linking
-MODULES	:= $(MODULEB) $(MODULEA)
+MODULES	:= $(MODULEC) $(MODULEB) $(MODULEA)
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
