@@ -4,6 +4,7 @@
 #include "Headers/header.h"
 #include "Funcs.h"
 #include "Static.h"
+#include "Dylib.h"
 
 int main(){
 	
@@ -16,6 +17,7 @@ int main(){
 	goodbye();
 
 	static_function();
-
+	dylib();
+	
 	return 0;
 }

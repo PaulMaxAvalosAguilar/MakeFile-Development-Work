@@ -4,11 +4,13 @@ SRCEXT      := c
 OBJEXT      := o
 
 #write -l library
-LIB         :=  -l$(MODULEB)
+LIB         :=  -l$(MODULEB)\
+	-l$(MODULEC)
 #write -I $(INCDIR)
 INCDEP      := -I src/Fold\
 	-I src/Functions\
-	-I ../StaticLibTest/src/
+	-I ../StaticLibTest/src/\
+	-I ../SharedLibTest/src/
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
