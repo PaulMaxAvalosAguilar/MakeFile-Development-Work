@@ -14,8 +14,12 @@ CFLAGS	:= -g -Wall
 MACROS	:= -D DEBUG\
 #-D release
 
-DLEXT	:= .so
-SLEXT	:= .a
+DLEXT	:= so
+SLEXT	:= a
+SRCEXT	:= c
+OBJEXT	:= o
+
+INSTDIR	:= /usr/lib/
 
 CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
@@ -42,6 +46,7 @@ MODULES	:= $(MODULEC) $(MODULEB) $(MODULEA)
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
+
 export
 
 #DEFAULT PART
@@ -76,11 +81,20 @@ sync:
 
 #Clean PART
 clean:
-	@$(RM) -rf $(BUILDDIRECTORY)
+	@$(RM) -rf $(BUILDDIRECTORY)/$(VERSION)/
+	@$(RM) -rf $(LIBDIRECTORY)/$(VERSION)/
 
 cleaner: clean
-	@$(RM) -rf $(TARGETDIRECTORY)
-	@$(RM) -rf $(LIBDIRECTORY)
+	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
 
-.PHONY: all directories resources clean cleaner Application run sync
+install:
+	sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(INSTDIR)
+
+uninstall:
+	$(eval SOURCEDYLIBS := $(shell find $(LIBDIRECTORY)/$(VERSION) -type f -name *.$(DLEXT)))
+	$(eval DYLIBS	:= $(patsubst $(LIBDIRECTORY)/$(VERSION)%,%,$(SOURCEDYLIBS)))
+	sudo $(RM) $(INSTDIR)$(DYLIBS)
+
+
+.PHONY: all directories resources clean cleaner Application run sync install uninstall
 
