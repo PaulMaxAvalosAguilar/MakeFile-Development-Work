@@ -19,7 +19,8 @@ SLEXT	:= a
 SRCEXT	:= c
 OBJEXT	:= o
 
-INSTDIR	:= /usr/lib/
+LIBINSTDIR	:= /usr/local/lib/
+BININSTDIR	:=
 
 CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
@@ -80,20 +81,28 @@ sync:
 	@rsync -r --delete ./$(TARGETDIRECTORY)/$(VERSION) $(CROSSCOMPILE_HOSTNAME)@$(CROSSCOMPILE_SSH_HOST):$(CROSSCOMPILE_DIR)
 
 #Clean PART
-clean:
+clean: 
 	@$(RM) -rf $(BUILDDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(LIBDIRECTORY)/$(VERSION)/
 
-cleaner: clean
+cleaner:  clean
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
 
 install:
-	sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(INSTDIR)
+	@echo Running shared libraries install commands
+	@sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTDIR)
+	@sudo ldconfig
+	@echo Everything installed
 
 uninstall:
+	@echo Running shared libraries uninstall commands
 	$(eval SOURCEDYLIBS := $(shell find $(LIBDIRECTORY)/$(VERSION) -type f -name *.$(DLEXT)))
 	$(eval DYLIBS	:= $(patsubst $(LIBDIRECTORY)/$(VERSION)%,%,$(SOURCEDYLIBS)))
-	sudo $(RM) $(INSTDIR)$(DYLIBS)
+	@for library in $(DYLIBS); do\
+		sudo $(RM) $(LIBINSTDIR)$$library;\
+	done
+
+	@echo Everything uninstalled
 
 
 .PHONY: all directories resources clean cleaner Application run sync install uninstall

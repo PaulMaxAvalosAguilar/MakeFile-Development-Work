@@ -1,10 +1,8 @@
 #Library name
 LIBNAME     := $(MODULEC)
 
-#The Directories, Source, Includes, Objects, Binary and Resources
+#The Source directory
 SRCDIR      := src
-SRCEXT      := c
-OBJEXT      := o
 
 #write -I $(INCDIR)
 INCDEP      := 
@@ -21,7 +19,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #---------------------------------------------------------------------------------
 
 #COMPILE PART
-$(LIBDIR)/lib$(LIBNAME).so:  $(OBJECTS) 
+$(LIBDIR)/lib$(LIBNAME).$(DLEXT):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
 	$(CC) -shared -o  $@ $?
 

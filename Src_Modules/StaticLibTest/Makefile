@@ -3,8 +3,6 @@ LIBNAME     := $(MODULEB)
 
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
-SRCEXT      := c
-OBJEXT      := o
 
 #write -I $(INCDIR)
 INCDEP      := 
@@ -21,7 +19,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #---------------------------------------------------------------------------------
 
 #COMPILE PART
-$(LIBDIR)/lib$(LIBNAME).a:  $(OBJECTS) 
+$(LIBDIR)/lib$(LIBNAME).$(SLEXT):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
 	$(ARCH)  $@ $?
 
