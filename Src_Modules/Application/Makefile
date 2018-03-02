@@ -1,7 +1,5 @@
 #The Directories, Source, Includes, Objects, Binary and Resources
 SRCDIR      := src
-SRCEXT      := c
-OBJEXT      := o
 
 #write -l library
 LIB         :=  -l$(MODULEB)\
@@ -27,9 +25,9 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #COMPILE PART
 $(TARGETDIR)/$(TARGET):  $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB)
+	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB)  $(LDFLAGS)
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+	$(CC) $(CFLAGS)  $(MACROS) -c $< $(INCDEP) -o $@  
 

@@ -1,17 +1,27 @@
-#Compiler and linker
-#Archiver
-#Version
-#The target binary program
-#Flags -g -Wall
-#Remote crosscompiling sync
-#Write Macros -D
+CROSSCOMPILE_HOSTNAME 	:= pi
+CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
+CROSSCOMPILE_DIR 	:= /home/pi
+#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
+#Raspberry
 
+#The Directories, Version, Libraries search and install directories
+SRC_MODULES_DIR	:= Src_Modules
+BUILDDIRECTORY 	:= Objects
+TARGETDIRECTORY	:= Release
+RESDIR      	:= Resources
+LIBDIRECTORY	:= Libraries
+VERSION		:= Debugx64
+LIBSEARCHDIR	:= $(LIBDIRECTORY)/$(VERSION)/
+LIBINSTALLDIR	:= 
+
+#Compiler and archiver 
+
+TARGET 	:= Application
 CC 	:= gcc
 ARCH	:= ar rcs
-VERSION	:= Debugx64
-TARGET 	:= Application
 CFLAGS	:= -g -Wall
-MACROS	:= -D DEBUG\
+LDFLAGS	:= -Wl,-rpath,$(LIBSEARCHDIR)
+MACROS	:= -D DEBUG
 #-D release
 
 DLEXT	:= so
@@ -19,21 +29,6 @@ SLEXT	:= a
 SRCEXT	:= c
 OBJEXT	:= o
 
-LIBINSTDIR	:= /usr/local/lib/
-BININSTDIR	:=
-
-CROSSCOMPILE_HOSTNAME 	:= pi
-CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
-CROSSCOMPILE_DIR 	:= /home/pi
-#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-#Raspberry
-
-#The Directories, Source, Includes, Objects, Binary and Resources
-SRC_MODULES_DIR	:= Src_Modules
-BUILDDIRECTORY 	:= Objects
-TARGETDIRECTORY	:= Release
-RESDIR      	:= Resources
-LIBDIRECTORY	:= Libraries
 
 #Modules Names
 MODULEA := Application
@@ -84,14 +79,11 @@ sync:
 clean: 
 	@$(RM) -rf $(BUILDDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(LIBDIRECTORY)/$(VERSION)/
-
-cleaner:  clean
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
 
 install:
 	@echo Running shared libraries install commands
-	@sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTDIR)
-	@sudo ldconfig
+	@sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTALLDIR)
 	@echo Everything installed
 
 uninstall:
@@ -99,11 +91,9 @@ uninstall:
 	$(eval SOURCEDYLIBS := $(shell find $(LIBDIRECTORY)/$(VERSION) -type f -name *.$(DLEXT)))
 	$(eval DYLIBS	:= $(patsubst $(LIBDIRECTORY)/$(VERSION)%,%,$(SOURCEDYLIBS)))
 	@for library in $(DYLIBS); do\
-		sudo $(RM) $(LIBINSTDIR)$$library;\
+		sudo $(RM) $(LIBINSTALLDIR)$$library;\
 	done
-
 	@echo Everything uninstalled
-
 
 .PHONY: all directories resources clean cleaner Application run sync install uninstall
 
