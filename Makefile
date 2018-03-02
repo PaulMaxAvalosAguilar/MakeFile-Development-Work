@@ -10,7 +10,8 @@ TARGETDIRECTORY	:= Release
 RESDIR      	:= Resources
 LIBDIRECTORY	:= Libraries
 VERSION		:= Debugx64
-LIBSEARCHDIR	:= $(LIBDIRECTORY)/$(VERSION)/
+LIBSEARCHDIR	:= $(LIBDIRECTORY)/$(VERSION)
+LIBSRSEARCHPATH	:= $(LIBDIRECTORY)/$(VERSION)
 LIBINSTALLDIR	:= 
 
 #Compiler and archiver 
@@ -19,7 +20,7 @@ TARGET 	:= Application
 CC 	:= gcc
 ARCH	:= ar rcs
 CFLAGS	:= -g -Wall
-LDFLAGS	:= -Wl,-rpath,$(LIBSEARCHDIR)
+LDFLAGS	:= -Wl,-rpath,$(LIBSRSEARCHPATH)
 MACROS	:= -D DEBUG
 #-D release
 
@@ -36,7 +37,8 @@ MODULEC	:= SharedLibTest
 MODULED := DataStructures
 
 #Write main module at last for correct linking
-MODULES	:= $(MODULEC) $(MODULEB) $(MODULEA)
+DEPMODULES	:= $(MODULEC) $(MODULEB) 
+MAINMODULE	:= $(MODULEA)
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
@@ -55,18 +57,22 @@ directories:
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
 
-	@for module in $(MODULES); do\
-		mkdir -p $(SRC_MODULES_DIR)/$$module;\
+	@for module in $(DEPMODULES); do\
+		mkdir -p $(SRC_MODULES_DIR)/$$module/$(SRCDIR);\
 	done
+
+	@mkdir -p $(SRC_MODULES_DIR)/$(MAINMODULE)/$(SRCDIR)
 
 resources:
 	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
 
 Application:
 
-	@for module in $(MODULES); do\
+	@for module in $(DEPMODULES); do\
 		make -C ./$(SRC_MODULES_DIR)/$$module;\
 	done
+
+	@make -C ./$(SRC_MODULES_DIR)/$(MAINMODULE)
 
 run:	
 	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)

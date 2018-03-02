@@ -13,7 +13,7 @@ INCDEP      := -I src/Fold\
 #---------------------------------------------------------------------------------
 BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
 TARGETDIR   := ../../$(TARGETDIRECTORY)/$(VERSION)
-LIBRARYPATH := -L ../../$(LIBDIRECTORY)/$(VERSION)
+LIBRARYPATH := -L ../../$(LIBSEARCHDIR)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
@@ -23,7 +23,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #COMPILE PART
 $(TARGETDIR)/$(TARGET):  $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB)  $(LDFLAGS)
+	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB) $(LDFLAGS)
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
