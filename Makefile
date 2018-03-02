@@ -2,7 +2,6 @@ CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
 CROSSCOMPILE_DIR 	:= /home/pi
 #/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-#Raspberry
 
 #The Directories, Version, Libraries search and install directories
 SRC_MODULES_DIR	:= Src_Modules
@@ -28,7 +27,7 @@ DLEXT	:= so
 SLEXT	:= a
 SRCEXT	:= c
 OBJEXT	:= o
-
+SRCDIR	:= src
 
 #Modules Names
 MODULEA := Application

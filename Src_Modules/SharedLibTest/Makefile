@@ -1,9 +1,6 @@
 #Library name
 LIBNAME     := $(MODULEC)
 
-#The Source directory
-SRCDIR      := src
-
 #write -I $(INCDIR)
 INCDEP      := 
 

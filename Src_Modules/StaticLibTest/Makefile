@@ -1,9 +1,6 @@
 #Library name
 LIBNAME     := $(MODULEB)
 
-#The Directories, Source, Includes, Objects, Binary and Resources
-SRCDIR      := src
-
 #write -I $(INCDIR)
 INCDEP      := 
 
