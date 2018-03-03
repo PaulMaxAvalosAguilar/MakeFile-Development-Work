@@ -1,7 +1,4 @@
 
-#write -l library
-LIB         :=  -l$(MODULEB)\
-	-l$(MODULEC)
 #write -I $(INCDIR)
 INCDEP      := -I src/Fold\
 	-I src/Functions\
@@ -13,7 +10,6 @@ INCDEP      := -I src/Fold\
 #---------------------------------------------------------------------------------
 BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
 TARGETDIR   := ../../$(TARGETDIRECTORY)/$(VERSION)
-LIBRARYPATH := -L ../../$(LIBSEARCHDIR)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
@@ -23,8 +19,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 #COMPILE PART
 $(TARGETDIR)/$(TARGET):  $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CC) -o $@ $? $(LIBRARYPATH) $(LIB) $(LDFLAGS)
-
+	$(CC) -o $@ $? $(LDFLAGS) 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS)  $(MACROS) -c $< $(INCDEP) -o $@  
