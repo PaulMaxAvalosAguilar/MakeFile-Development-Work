@@ -1,43 +1,45 @@
+#CROSSCOMPILE SECTION
 CROSSCOMPILE_HOSTNAME 	:= pi
 CROSSCOMPILE_SSH_HOST 	:= 192.168.1.70
 CROSSCOMPILE_DIR 	:= /home/pi
-#/home/paul/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc-4.8.3
-#Raspberry
 
-#The Directories, Version, Libraries search and install directories
+#The Directories and extensions SECTION
 SRC_MODULES_DIR	:= Src_Modules
 BUILDDIRECTORY 	:= Objects
 TARGETDIRECTORY	:= Release
 RESDIR      	:= Resources
 LIBDIRECTORY	:= Libraries
-VERSION		:= Debugx64
-LIBSEARCHDIR	:= $(LIBDIRECTORY)/$(VERSION)/
-LIBINSTALLDIR	:= 
-
-#Compiler and archiver 
-
-TARGET 	:= Application
-CC 	:= gcc
-ARCH	:= ar rcs
-CFLAGS	:= -g -Wall
-LDFLAGS	:= -Wl,-rpath,$(LIBSEARCHDIR)
-MACROS	:= -D DEBUG
-#-D release
 
 DLEXT	:= so
 SLEXT	:= a
 SRCEXT	:= c
 OBJEXT	:= o
+SRCDIR	:= src
 
-
-#Modules Names
+#Modules SECTION
 MODULEA := Application
 MODULEB := StaticLibTest
 MODULEC	:= SharedLibTest
 MODULED := DataStructures
 
-#Write main module at last for correct linking
-MODULES	:= $(MODULEC) $(MODULEB) $(MODULEA)
+DEPMODULES	:= $(MODULEC) $(MODULEB) 
+MAINMODULE	:= $(MODULEA)
+
+LIBSTOLINK    	:=  -l $(MODULEB)\
+	-l $(MODULEC)
+
+#Compiler and archiver SECTION
+TARGET 		:= Application
+VERSION		:= Debugx64
+CC 		:= gcc
+ARCH		:= ar rcs
+LIBSEARCHDIR	:= $(LIBDIRECTORY)/$(VERSION)/
+LIBSRSEARCHPATH	:= $(LIBDIRECTORY)/$(VERSION)/
+LIBINSTALLDIR	:= 
+CFLAGS		:= -g -Wall
+LDFLAGS		:= -L ../../$(LIBSEARCHDIR) $(LIBSTOLINK) \
+	-Wl,-rpath,$(LIBSRSEARCHPATH)
+MACROS		:= -D DEBUG
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
@@ -56,18 +58,22 @@ directories:
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
 
-	@for module in $(MODULES); do\
-		mkdir -p $(SRC_MODULES_DIR)/$$module;\
+	@for module in $(DEPMODULES); do\
+		mkdir -p $(SRC_MODULES_DIR)/$$module/$(SRCDIR);\
 	done
+
+	@mkdir -p $(SRC_MODULES_DIR)/$(MAINMODULE)/$(SRCDIR)
 
 resources:
 	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
 
 Application:
 
-	@for module in $(MODULES); do\
+	@for module in $(DEPMODULES); do\
 		make -C ./$(SRC_MODULES_DIR)/$$module;\
 	done
+
+	@make -C ./$(SRC_MODULES_DIR)/$(MAINMODULE)
 
 run:	
 	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)

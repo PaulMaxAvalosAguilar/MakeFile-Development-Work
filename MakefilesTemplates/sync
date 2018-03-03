@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rsync ../Makefile ./MainMakefile
-rsync ../Src_Modules/Application/Makefile ./MainApplication
-rsync ../Src_Modules/SharedLibTest/Makefile ./SharedLibrary
-rsync ../Src_Modules/StaticLibTest/Makefile ./StaticLibrary
+rsync -vzh --update ../Makefile ./MainMakefile
+rsync -vzh --update ../Src_Modules/Application/Makefile ./MainApplication
+rsync -vzh --update ../Src_Modules/SharedLibTest/Makefile ./SharedLibrary
+rsync -vzh --update ../Src_Modules/StaticLibTest/Makefile ./StaticLibrary
