@@ -5,8 +5,7 @@ BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
 LIBDIR	    := ../../$(LIBDIRECTORY)/$(VERSION)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
-
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 #---------------------------------------------------------------------------------
 
 include Makefile.config
