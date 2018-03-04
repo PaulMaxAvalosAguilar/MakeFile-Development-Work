@@ -1,26 +1,21 @@
-#Library name
-LIBNAME     := $(MODULEB)
-
-#write -I $(INCDIR)
-INCDEP      := 
-
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
-BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
 LIBDIR	    := ../../$(LIBDIRECTORY)/$(VERSION)
+BUILDDIR    := ../../$(BUILDDIRECTORY)/$(VERSION)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT))) 
-
 #---------------------------------------------------------------------------------
 
+include Makefile.config
+
 #COMPILE PART
-$(LIBDIR)/lib$(LIBNAME).$(SLEXT):  $(OBJECTS) 
+$(PACKAGINGNAME):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
-	$(ARCH)  $@ $?
+	$(PACKAGINGINSTRUCTIONS)  $@ $?
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) 
-	$(CC) $(CFLAGS) $(MACROS) -c $< $(INCDEP) -o $@  
+	$(COMPILATIONINSTURCTIONS) $< -o $@  
 

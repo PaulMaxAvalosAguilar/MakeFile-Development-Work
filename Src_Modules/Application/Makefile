@@ -1,9 +1,4 @@
-
-#write -I $(INCDIR)
-INCDEP      := -I src/Fold\
-	-I src/Functions\
-	-I ../StaticLibTest/src/\
-	-I ../SharedLibTest/src/
+include Makefile.config
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE

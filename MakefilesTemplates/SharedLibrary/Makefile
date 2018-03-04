@@ -1,9 +1,3 @@
-#Library name
-LIBNAME     := $(MODULEC)
-
-#write -I $(INCDIR)
-INCDEP      := 
-
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
@@ -15,12 +9,14 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 
 #---------------------------------------------------------------------------------
 
+include Makefile.config
+
 #COMPILE PART
-$(LIBDIR)/lib$(LIBNAME).$(DLEXT):  $(OBJECTS) 
+$(PACKAGINGNAME):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
-	$(CC) -shared -o  $@ $?
+	$(PACKAGINGINSTRUCTIONS)  $@ $?
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) 
-	$(CC) $(CFLAGS) $(MACROS) -fPIC -c $< $(INCDEP) -o $@  
+	$(COMPILATIONINSTURCTIONS) $< -o $@  
 
