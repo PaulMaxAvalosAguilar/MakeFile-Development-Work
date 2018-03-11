@@ -9,4 +9,4 @@ rsync -vzh --update ../Src_Modules/Application/Makefile.config ./SecondAppMakefi
 rsync -vzh --update ../Src_Modules/StaticLibTest/Makefile ./SecondLibraryMakefile
 rsync -vzh --update ../Src_Modules/StaticLibTest/Makefile.config ./SecondLibraryMakefile
 
-zip MakefilesTemplates.zip ./FirstMakefile ./SecondAppMakefile ./SecondLibraryMakefile
+zip MakefilesTemplates.zip ./FirstMakefile/* ./SecondAppMakefile/* ./SecondLibraryMakefile/*
