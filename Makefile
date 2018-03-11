@@ -46,7 +46,7 @@ clean:
 	@$(RM) -rf $(BUILDDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(LIBDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
-	@$(RM) -rf $(HEADERSDIRECTORY)/$(VERSION)/
+	@$(RM) -rf $(HEADERSDIRECTORY)/*
 
 install:
 	@echo Running shared libraries install commands
