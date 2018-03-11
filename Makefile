@@ -16,6 +16,7 @@ directories:
 	@mkdir -p $(RESDIR)
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
+	@mkdir -p $(HEADERSDIRECTORY)
 
 	@for module in $(DEPMODULES); do\
 		mkdir -p $(SRC_MODULES_DIR)/$$module/$(SRCDIR);\
@@ -45,6 +46,7 @@ clean:
 	@$(RM) -rf $(BUILDDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(LIBDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
+	@$(RM) -rf $(HEADERSDIRECTORY)/$(VERSION)/
 
 install:
 	@echo Running shared libraries install commands
@@ -60,5 +62,5 @@ uninstall:
 	done
 	@echo Everything uninstalled
 
-.PHONY: all directories resources clean cleaner Application run sync install uninstall
+.PHONY: all directories resources clean  Application run sync install uninstall
 
