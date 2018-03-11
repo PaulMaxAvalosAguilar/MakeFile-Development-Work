@@ -17,6 +17,7 @@ all: $(COPYHEAD) $(PACKAGINGNAME)
 $(COPYHEAD):
 	@mkdir -p $(HEADDIR)
 	rsync -r --delete $(HEADERS) $(HEADDIR)/
+
 #COMPILE PART
 $(PACKAGINGNAME):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
