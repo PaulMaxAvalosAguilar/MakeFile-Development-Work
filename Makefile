@@ -24,8 +24,10 @@ directories:
 
 	@mkdir -p $(SRC_MODULES_DIR)/$(MAINMODULE)/$(SRCDIR)
 
-resources:
-	rsync -r --delete $(RESDIR) $(TARGETDIRECTORY)/$(VERSION)
+installdirectories:
+	@sudo mkdir -p $(EXECINSTALLDIR)/
+	@sudo mkdir -p $(LIBINSTALLDIR)/
+	@sudo mkdir -p $(RESINSTALLDIR)/
 
 Application:
 
@@ -48,10 +50,18 @@ clean:
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(HEADERSDIRECTORY)/*
 
-install:
+install: installdirectories
 	@echo Running shared libraries install commands
 	@sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTALLDIR)
-	@echo Everything installed
+	@echo Libraries installed
+
+	@echo Running executable install command
+	@sudo cp ./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET) $(EXECINSTALLDIR)
+	@echo Executable installed
+
+	@echo Running resources install commands
+	@sudo rsync -r --delete  $(RESDIRECTORY) $(RESINSTALLDIR)
+	@echo Resources installed
 
 uninstall:
 	@echo Running shared libraries uninstall commands
@@ -60,7 +70,12 @@ uninstall:
 	@for library in $(DYLIBS); do\
 		sudo $(RM) $(LIBINSTALLDIR)$$library;\
 	done
-	@echo Everything uninstalled
 
-.PHONY: all directories resources clean  Application run sync install uninstall
+	@echo Running executable uninstall command
+	@sudo rm $(EXECINSTALLDIR)/$(TARGET)
+	@echo Executable uninstalled
+
+	@echo resources should be removed manually from its containing dir$(RESINSTALLDIR)
+
+
 
