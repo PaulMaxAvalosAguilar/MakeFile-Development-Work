@@ -13,7 +13,7 @@ all: Application
 directories: 
 	@mkdir -p $(TARGETDIRECTORY)
 	@mkdir -p $(BUILDDIRECTORY)
-	@mkdir -p $(RESDIR)
+	@mkdir -p $(RESDIRECTORY)
 	@mkdir -p $(LIBDIRECTORY)
 	@mkdir -p $(SRC_MODULES_DIR)
 	@mkdir -p $(HEADERSDIRECTORY)
