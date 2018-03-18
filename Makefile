@@ -25,9 +25,9 @@ directories:
 	@mkdir -p $(SRC_MODULES_DIR)/$(MAINMODULE)/$(SRCDIR)
 
 installdirectories:
-	@sudo mkdir -p $(EXECINSTALLDIR)/
-	@sudo mkdir -p $(LIBINSTALLDIR)/
-	@sudo mkdir -p $(RESINSTALLDIR)/
+	@mkdir -p $(EXECINSTALLDIR)/
+	@mkdir -p $(LIBINSTALLDIR)/
+	@mkdir -p $(RESINSTALLDIR)/
 
 Application:
 
@@ -50,17 +50,17 @@ clean:
 	@$(RM) -rf $(TARGETDIRECTORY)/$(VERSION)/
 	@$(RM) -rf $(HEADERSDIRECTORY)/*
 
-install: installdirectories
+install: installdirectories 
 	@echo Running shared libraries install commands
-	@sudo cp ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTALLDIR)
+	@rsync -r --delete ./$(LIBDIRECTORY)/$(VERSION)/*.so  $(LIBINSTALLDIR)
 	@echo Libraries installed
 
 	@echo Running executable install command
-	@sudo cp ./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET) $(EXECINSTALLDIR)
+	@rsync -r --delete ./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET) $(EXECINSTALLDIR)
 	@echo Executable installed
 
 	@echo Running resources install commands
-	@sudo rsync -r --delete  $(RESDIRECTORY) $(RESINSTALLDIR)
+	@rsync -r --delete  $(RESDIRECTORY) $(RESINSTALLDIR)
 	@echo Resources installed
 
 uninstall:
@@ -68,14 +68,17 @@ uninstall:
 	$(eval SOURCEDYLIBS := $(shell find $(LIBDIRECTORY)/$(VERSION) -type f -name *.$(DLEXT)))
 	$(eval DYLIBS	:= $(patsubst $(LIBDIRECTORY)/$(VERSION)%,%,$(SOURCEDYLIBS)))
 	@for library in $(DYLIBS); do\
-		sudo $(RM) $(LIBINSTALLDIR)$$library;\
+		$(RM) $(LIBINSTALLDIR)$$library;\
 	done
 
 	@echo Running executable uninstall command
-	@sudo rm $(EXECINSTALLDIR)/$(TARGET)
+	@rm $(EXECINSTALLDIR)/$(TARGET)
 	@echo Executable uninstalled
 
-	@echo resources should be removed manually from its containing dir$(RESINSTALLDIR)
+	$(eval ALLRESTOBEDELETED := $(shell find ./$(RESDIRECTORY)))
+	$(eval RESTOBEDELETED := $(patsubst .%,%,$(ALLRESTOBEDELETED)))
 
-
-
+	@for files in $(RESTOBEDELETED); do\
+		$(RM) $$files;\
+	done
+	@echo Resources uninstalled
