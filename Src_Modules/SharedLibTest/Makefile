@@ -20,7 +20,7 @@ $(COPYHEAD):
 #COMPILE PART
 $(PACKAGINGNAME):  $(OBJECTS) 
 	@mkdir -p $(dir $@)
-	$(PACKAGINGINSTRUCTIONS)  $@ $?
+	$(PACKAGINGINSTRUCTIONS)  $@ $(OBJECTS)
 
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@) 

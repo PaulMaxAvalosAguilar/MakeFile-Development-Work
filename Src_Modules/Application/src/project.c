@@ -18,6 +18,10 @@ int main(){
 
 	static_function();
 	dylib();
+
+	printf("We are gonna open a file"
+	       "to demonstrate the use through Resources absolute"
+	       "path Macro for working and installing resources\n");
 	
 	return 0;
 }
