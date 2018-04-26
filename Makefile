@@ -75,6 +75,7 @@ uninstall:
 	@rm $(EXECINSTALLDIR)/$(TARGET)
 	@echo Executable uninstalled
 
+	@echo Running resources uninstall commands
 	$(eval ALLRESTOBEDELETED := $(shell find ./$(RESDIRECTORY)))
 	$(eval RESTOBEDELETED := $(patsubst .%,%,$(ALLRESTOBEDELETED)))
 

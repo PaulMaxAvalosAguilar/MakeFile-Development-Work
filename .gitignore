@@ -51,8 +51,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-Resources
-Resources/
+
 
 Release
 Release/

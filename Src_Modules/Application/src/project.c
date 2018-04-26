@@ -17,7 +17,11 @@ int main(){
 #ifdef DEBUG
   printf("DEBUG was defined through command line \n");
 #endif
-	
+
+#ifdef RELEASE
+  printf("Release was defined through command line \n");
+#endif
+  
   hello();
   printf("%s", "hello to everyone u fools\n");
   goodbye();
@@ -36,10 +40,11 @@ int main(){
   }else{
     fscanf(file, "%d %d %d", &numero1, &numero2, &numero3 );
     fclose(file);
+
+    printf("Introduced numbers were "
+	   "%d %d %d\n", numero1, numero2, numero3);
+
   }
 
-  printf("Introduced numbers were "
-	 "%d %d %d\n", numero1, numero2, numero3);
-	
-	return 0;
+  return 0;
 }
