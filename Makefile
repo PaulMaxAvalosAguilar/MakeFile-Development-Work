@@ -29,7 +29,7 @@ installdirectories:
 	@mkdir -p $(LIBINSTALLDIR)/
 	@mkdir -p $(RESINSTALLDIR)/
 
-Application:
+Application: 
 
 	@for module in $(DEPMODULES); do\
 		make -C ./$(SRC_MODULES_DIR)/$$module;\
@@ -37,7 +37,7 @@ Application:
 
 	@make -C ./$(SRC_MODULES_DIR)/$(MAINMODULE)
 
-run:	Application
+run:	Application install
 	./$(TARGETDIRECTORY)/$(VERSION)/$(TARGET)
 
 sync: 
@@ -67,9 +67,11 @@ uninstall:
 	@echo Running shared libraries uninstall commands
 	$(eval SOURCEDYLIBS := $(shell find $(LIBDIRECTORY)/$(VERSION) -type f -name *.$(DLEXT)))
 	$(eval DYLIBS	:= $(patsubst $(LIBDIRECTORY)/$(VERSION)%,%,$(SOURCEDYLIBS)))
+	@echo Running libraries uninstall command
 	@for library in $(DYLIBS); do\
 		$(RM) $(LIBINSTALLDIR)$$library;\
 	done
+	@echo Libraries uninstalled
 
 	@echo Running executable uninstall command
 	@rm $(EXECINSTALLDIR)/$(TARGET)
