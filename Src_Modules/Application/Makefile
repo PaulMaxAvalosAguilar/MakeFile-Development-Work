@@ -8,6 +8,7 @@ TARGETDIR   := ../../$(TARGETDIRECTORY)/$(VERSION)
 
 SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+DEPENDS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.d))
 
 #---------------------------------------------------------------------------------
 
@@ -15,7 +16,10 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 $(TARGETDIR)/$(TARGET):  $(OBJECTS)
 	@mkdir -p $(dir $@)
 	$(CC) -o $@ $(OBJECTS)  $(LDFLAGS)
+
+-include $(DEPENDS)
+
 $(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS)  $(MACROS) -c $< $(INCDEP) -o $@  
+	$(CC) $(CFLAGS)  $(MACROS) -MMD -MP -c $< $(INCDEP) -o $@  
 

@@ -23,15 +23,16 @@ int main(){
 #endif
   
   hello();
-  printf("%s", "hello to everyone u fools\n");
+  printf("%s", "Using printf\n");
+  printf("Printing constant from header %d\n", NUMBER);
   goodbye();
-
+  
   static_function();
   dylib();
 
-  printf("We are gonna open a file "
-	 "to demonstrate the use through Resources absolute "
-	 "path Macro for working and installing resources\n");
+  printf("\nFile opening "
+	 "for Resources absolute path Macro working "
+	 "and installation demonstration:\n");
 
   char directory[100]="";
   sprintf(directory, "%sResourceTest",RESOURCES);

@@ -2,5 +2,5 @@
 #include <stdio.h>
 
 void goodbye(){
-	printf("I am sorry but I will have to say goobye to you\n");
+	printf("goodbye() function being called\n");
 }
